@@ -1,1 +1,128 @@
-x_x
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>x_x</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="WIP">
+    <meta property="og:site_name" content="WIP">
+    <meta property="og:description" content="WIP">
+    <meta property="og:url" content="http://wip.af/">
+    <meta property="og:image" content="http://wip.af/snap.png">
+    <meta property="og:image:width" content="350">
+    <meta property="og:image:height" content="350">
+    <meta property="og:type" content="music.song">
+    <meta property="music:duration" content="420">
+    <meta property="music:album" content="grass">
+    <meta property="music:album:disc" content="420">
+    <meta property="music:album:track" content="69">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/91/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.1/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.1/react-dom.min.js"></script>
+    <script src="/assets/svv.im.bundled.js"></script>
+    <style>
+    html, body {
+      margin: 0;
+      padding: 0 ;
+    }
+    body {
+      font-family: sans-serif;
+      font-size: 12pt;
+      background-color: #F6F6F6;
+    }
+    #you-know {
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: rgb(255, 68, 112);
+      width: 100%;
+      height: 100%;
+        z-index: -2;
+    }
+    #dont-touch-me {
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    #i-dont-really-want-to-think-about-it {
+      font-family: sans-serif;
+      font-weight: bolder;
+      font-size: 200%;
+      width: 500px;
+      max-width: 50%;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      margin-top: 0;
+      color: white;
+      margin: 0 auto;
+    }
+
+    #x_x {
+      background-color: rgba(135, 181, 255, 0.5);
+    }
+
+    #version {
+      letter-spacing: 0.1em;
+      position: fixed;
+      bottom: 0px;
+      padding-left: 0.5em;
+      padding-bottom: 0.25em;
+      color: black;
+      color: #333333;
+    }
+
+    </style>
+  </head>
+  <body>
+    <div id="you-know"><canvas id="dont-touch-me"></canvas></div>
+    <!-- <footer id="version">grassbusiness//dev//2018-02-10//v0.4.20-alpha</footer> -->
+    <script>
+
+      function debounce(delay, f) {
+        var id = null;
+        return function () {
+          var self = this;
+          var args = arguments;
+          clearTimeout(id);
+          id = setTimeout(function () {
+            f.apply(self, args);
+          }, delay);
+        }
+      }
+
+      var app = new svv.KanyeApp({
+        id: "dont-touch-me",
+      });
+
+      var params =  {
+        "color": "#1e6934",
+        "emissive": "#080816",
+        "specular": "#8a1fb6",
+        "shininess": 5.307599517490953,
+        "reflectivity": 0.0,
+        "y": 40.0,
+      };
+
+      app.setup();
+      app.update(params);
+      app.setPhong(params);
+
+      window.addEventListener('load', function (ev) {
+        (function loloop() {
+          app.update(params);
+          app.draw();
+          requestAnimationFrame(loloop);
+        }());
+        app.resize(window.innerWidth, window.innerHeight);
+        window.addEventListener('resize', debounce(100, function (ev) {
+          app.resize(window.innerWidth, window.innerHeight);
+        }));
+      });
+    </script>
+  </body>
+</html>
+
