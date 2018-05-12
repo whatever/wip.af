@@ -5503,7 +5503,7 @@ var svv =
 	        var s = 30.0;
 	        var simplex = new _simplexNoise2.default("whatever");
 	        return function (x, y) {
-	          return 4.0 * simplex.noise2D(x / s, y / s / 3.);
+	          return 10.0 * simplex.noise2D(x / s, y / s);
 	        };
 	      }();
 
@@ -5529,12 +5529,12 @@ var svv =
 	      });
 
 	      var floorMat = new THREE.MeshBasicMaterial({
-	        color: 0x444444,
-	        wireframe: true,
+	        color: 0x000000,
+	        wireframe: false,
 	        side: THREE.DoubleSide
 	      });
 
-	      var surface = new _TriangleSurface2.default(this.floor.f, 2.0, 80.0, 80.0);
+	      var surface = new _TriangleSurface2.default(this.floor.f, 4.0, 1000.0, 1000.0);
 
 	      this.scene.add(new THREE.Mesh(surface.build(), floorMat));
 	    }
