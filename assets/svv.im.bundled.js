@@ -3043,9 +3043,6 @@ var svv =
 	      var X_SEGS = Math.floor(this.width / this.radius);
 	      var Y_SEGS = Math.floor(this.height / this.radius);
 
-	      console.log(this.width, this.height);
-	      console.log(X_SEGS, Y_SEGS);
-
 	      for (var i = -X_SEGS / 2; i < X_SEGS / 2; i++) {
 	        for (var j = -Y_SEGS; j < Y_SEGS; j++) {
 	          var _mesh$get$getPointLis = this.mesh.get(i, j).getPointList(),
@@ -5325,7 +5322,7 @@ var svv =
 
 	var _StarrySky = __webpack_require__(40);
 
-	var _SunnySky = __webpack_require__(43);
+	var _Sky = __webpack_require__(43);
 
 	var _RibbonPath = __webpack_require__(16);
 
@@ -5429,6 +5426,7 @@ var svv =
 
 	      // Sky
 	      this.sky = this.getSky();
+	      this.scene.add(this.sky.simulacrum.group);
 
 	      this.scene.add(this.sky.sky);
 	      this.setTheta(0.0);
@@ -5448,10 +5446,16 @@ var svv =
 	  }, {
 	    key: 'getSky',
 	    value: function getSky() {
-	      return new _SunnySky.SunnySky({
-	        size: 950.0,
-	        sunPosition: [1, 0, 0]
+	      return new _Sky.Sky({
+	        size: 300.0,
+	        sunPosition: [1, 0, 0],
+	        simulacrum: true
 	      });
+	    }
+	  }, {
+	    key: 'set',
+	    value: function set(params) {
+	      this.sky.set(params);
 	    }
 	  }, {
 	    key: 'setPhong',
@@ -5490,7 +5494,7 @@ var svv =
 	      var _this2 = this;
 
 	      var mat = new THREE.MeshPhongMaterial({
-	        color: 0x00000,
+	        color: 0x000CCC,
 	        emissive: 0x000000,
 	        specular: 0x000000,
 	        shininess: 0.0,
@@ -5529,7 +5533,7 @@ var svv =
 	      });
 
 	      var floorMat = new THREE.MeshBasicMaterial({
-	        color: 0x000000,
+	        color: 0x002222,
 	        wireframe: false,
 	        side: THREE.DoubleSide
 	      });
@@ -5549,25 +5553,27 @@ var svv =
 	      var theta = f % 2 * Math.PI;
 
 	      // xD
-	      var a = 0,
-	          b = 10.0,
+	      var a = 5,
+	          b = 9.0,
 	          c = 0;
+	      var j = a - 6.0,
+	          k = b,
+	          l = c;
+
+
+	      this.sky.simulacrum.group.position.set(j - 4.99, k - 0.69, l + 0.69);
+	      this.sky.simulacrum.group.rotation.set(Math.PI / 3.0, Math.PI / 3.0, -Math.PI / 6.0);
 
 	      this.camera.position.set(a, b, c);
-	      this.camera.lookAt(-1.0, b, 0);
-	      this.sky.mat.uniforms.theta.value = theta;
-	      /*
-	      this.sky.sky.position.x = a;
-	      this.sky.sky.position.y = b;
-	      this.sky.sky.position.z = c;
-	      //*/
+	      this.camera.lookAt(j, k, l);
 
 	      // ...
 	      var u = 2. * theta;
-	      var x = Math.sin(u);
-	      var y = 0.1 * Math.cos(u);
-	      var z = 0.1 * Math.sin(u);
-	      this.sky.setSunPosition(-1.0, y, z);
+	      var r = 0.3;
+	      var x = r * -3.0;
+	      var y = r * 0.3 * Math.cos(u) + 0.075;
+	      var z = r * 0.3 * Math.sin(u);
+	      this.sky.setSunPosition(x, y, z);
 	    }
 	  }, {
 	    key: 'setupCamera',
@@ -5817,7 +5823,7 @@ var svv =
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -5829,37 +5835,125 @@ var svv =
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var SunnySky = exports.SunnySky = function () {
-	  function SunnySky(_ref) {
+	var Sky = exports.Sky = function () {
+	  // Constructor
+	  function Sky(_ref) {
 	    var size = _ref.size,
-	        sunPosition = _ref.sunPosition;
+	        sunPosition = _ref.sunPosition,
+	        simulacrum = _ref.simulacrum;
 
-	    _classCallCheck(this, SunnySky);
+	    _classCallCheck(this, Sky);
 
 	    this.size = size;
-	    this.demoSun = this.getDemoSphere(sunPosition);
+	    this.demoSun = new THREE.Group();
 	    this.geo = this.geometry();
 	    this.mat = this.material();
 	    this.sky = new THREE.Group();
 	    this.sky.add(new THREE.Mesh(this.geo, this.mat));
+
+	    if (simulacrum) {
+	      this.simulacrum = this.simulacrum(-1.0, 0, 0);
+	      this.simulacrum.group.position.set(-1.0, -1.0, -1.0);
+	      console.log(this.simulacrum.group.position);
+	      console.log("[SIMULACRUM] Added");
+	    }
 	  }
 
-	  _createClass(SunnySky, [{
-	    key: 'getDemoSphere',
-	    value: function getDemoSphere(_ref2) {
-	      var _ref3 = _slicedToArray(_ref2, 3),
-	          x = _ref3[0],
-	          y = _ref3[1],
-	          z = _ref3[2];
+	  _createClass(Sky, [{
+	    key: "globe",
+	    value: function globe() {
+	      var g = new THREE.Group();
 
-	      var geo = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), new THREE.MeshBasicMaterial({ color: 0x000000 }));
-	      geo.position.x = x;
-	      geo.position.y = y;
-	      geo.position.z = z;
-	      return geo;
+	      /**
+	       *
+	       */
+	      function _globe(_ref2, c) {
+	        var _ref3 = _slicedToArray(_ref2, 3),
+	            x = _ref3[0],
+	            y = _ref3[1],
+	            z = _ref3[2];
+
+	        return new THREE.Mesh(new THREE.SphereGeometry(0.1, 30, 30), new THREE.MeshBasicMaterial({
+	          side: THREE.DoubleSide,
+	          color: c,
+	          wireframe: true,
+	          transparent: true,
+	          opacity: 0.05
+	        }));
+	      }
+
+	      function _dir(_ref4, c) {
+	        var _ref5 = _slicedToArray(_ref4, 3),
+	            x = _ref5[0],
+	            y = _ref5[1],
+	            z = _ref5[2];
+
+	        var g = new THREE.Geometry();
+	        g.vertices.push(new THREE.Vector3(-x, -y, -z));
+	        g.vertices.push(new THREE.Vector3(x, y, z));
+	        var m = new THREE.LineBasicMaterial({ color: c, linewidth: 100 });
+	        return new THREE.Line(g, m);
+	      }
+
+	      var axes = new THREE.Group();
+	      var l = 0.3;
+	      axes.add(_dir([l, 0, 0], 0xFF0000));
+	      axes.add(_dir([0, l, 0], 0x00FF00));
+	      axes.add(_dir([0, 0, l], 0x0000FF));
+	      axes.add(_globe([0, 0, 0], 0x999999));
+	      g.add(axes);
+
+	      return g;
+	    }
+
+	    // Return the simulacrum
+
+	  }, {
+	    key: "simulacrum",
+	    value: function simulacrum(x, y, z) {
+
+	      console.log("[SIMULACRUM] (x, y, z) = (", x, y, z, ")");
+
+	      var objects = {};
+
+	      var g = new THREE.Group();
+
+	      var size = 0.2;
+	      var mat = new THREE.MeshBasicMaterial({
+	        color: 0xDDDDDD,
+	        wireframe: true
+	      });
+	      objects.sun = new THREE.Mesh(new THREE.IcosahedronGeometry(size / 4.0), mat);
+	      objects.world = this.globe();
+	      objects.stars = _box([0, 0, 0], 0xCCCCCC);
+	      function _box(_ref6, c) {
+	        var _ref7 = _slicedToArray(_ref6, 3),
+	            x = _ref7[0],
+	            y = _ref7[1],
+	            z = _ref7[2];
+
+	        var size = 0.3;
+	        var box = new THREE.EdgesGeometry(new THREE.BoxGeometry(size, size, size));
+	        var mat = new THREE.LineBasicMaterial({
+	          color: 0xDDDDDD,
+	          linewidth: 10
+	        });
+	        return new THREE.LineSegments(box, mat);
+	      }
+
+	      // objects.sun.position.set(0.0, 0.1, 1.0);
+
+	      g.add(objects.world);
+	      g.add(objects.sun);
+	      g.add(objects.stars);
+
+	      return {
+	        group: g,
+	        objects: objects
+	      };
 	    }
 	  }, {
-	    key: 'geometry',
+	    key: "geometry",
 	    value: function geometry() {
 	      var size = this.size;
 	      var geo = new THREE.BoxGeometry(size, size, size, 1, 1, 1);
@@ -5869,7 +5963,7 @@ var svv =
 	    // Return material for
 
 	  }, {
-	    key: 'material',
+	    key: "material",
 	    value: function material() {
 	      return new THREE.ShaderMaterial({
 	        transparent: true,
@@ -5890,28 +5984,49 @@ var svv =
 	      });
 	    }
 	  }, {
-	    key: 'setSunPosition',
+	    key: "setSunPosition",
 	    value: function setSunPosition(x, y, z) {
 	      this.demoSun.position.x = x;
 	      this.demoSun.position.y = y;
 	      this.demoSun.position.z = z;
+
+	      if (this.simulacrum) {
+	        var v = 1.0;
+	        var j = v * x,
+	            k = v * y,
+	            l = v * z;
+
+	        this.simulacrum.objects.sun.position.set(j, k, l);
+	        var r = -20.0;
+	        this.simulacrum.objects.sun.rotation.set(r * j, r * k, r * l);
+	      }
+	    }
+	  }, {
+	    key: "set",
+	    value: function set(params) {
+	      console.log(params);
+	      this.mat.uniforms.rayleigh.value = params.rayleigh || this.mat.uniforms.rayleigh.value;
+	      this.mat.uniforms.turbidity.value = params.turbidity || this.mat.uniforms.turbidity.value;
+	      this.mat.uniforms.luminance.value = params.luminance || this.mat.uniforms.luminance.value;
+	      // this.mat.uniforms.mieDirectionalG.value = params.mieDirectionalG || this.mat.uniforms.mieDirectionalG.value;
+	      // this.mat.uniforms.mieCoefficient.value = params.mieCoefficient || this.mat.uniforms.mieCoefficient.value;
 	    }
 	  }]);
 
-	  return SunnySky;
+	  return Sky;
 	}();
 
 /***/ }),
 /* 44 */
 /***/ (function(module, exports) {
 
-	module.exports = "// precision mediump float;\n// precision mediump int;\n\n// uniform mat4 modelViewMatrix; // optional\n// uniform mat4 projectionMatrix; // optional\n\nuniform float size;\nuniform vec3 sunPosition;\n\nvarying vec3 vPosition;\n\n/**\n * \n */\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float rayleigh;\nuniform float turbidity;\nuniform float mieCoefficient;\n\nconst vec3 up = vec3(0.0, 1.0, 0.0);\n\n// constants for atmospheric scattering\nconst float e = 2.71828182845904523536028747135266249775724709369995957;\nconst float pi = 3.141592653589793238462643383279502884197169;\n\n// wavelength of used primaries, according to preetham\nconst vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );\n// this pre-calcuation replaces older TotalRayleigh(vec3 lambda) function:\n// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))\nconst vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );\n\n// mie stuff\n// K coefficient for the primaries\nconst float v = 4.0;\nconst vec3 K = vec3( 0.686, 0.678, 0.666 );\n\n// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K\nconst vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );\n\n// earth shadow hack\n// cutoffAngle = pi / 1.95;\nconst float cutoffAngle = 1.6110731556870734;\nconst float steepness = 1.5;\nconst float EE = 1000.0;\n\nfloat sunIntensity( float zenithAngleCos ) {\n  zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );\n  return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );\n}\n\nvec3 totalMie( float T ) {\n\tfloat c = ( 0.2 * T ) * 10E-18;\n\treturn 0.434 * c * MieConst;\n}\n\nvoid main() {\n\n  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );\n  vWorldPosition = worldPosition.xyz;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n  gl_Position.z = gl_Position.w; // set z to camera.far\n\n  vSunDirection = normalize( sunPosition );\n\n  vSunE = sunIntensity( dot( vSunDirection, up ) );\n\n  vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );\n\n  float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );\n\n  // extinction (absorbtion + out scattering)\n  // rayleigh coefficients\n  vBetaR = totalRayleigh * rayleighCoefficient;\n\n  // mie coefficients\n  vBetaM = totalMie( turbidity ) * mieCoefficient;\n\n}\n"
+	module.exports = "// precision mediump float;\n// precision mediump int;\n\n// uniform mat4 modelViewMatrix; // optional\n// uniform mat4 projectionMatrix; // optional\n\nuniform float size;\nuniform vec3 sunPosition;\n\n/**\n * \n */\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float rayleigh;\nuniform float turbidity;\nuniform float mieCoefficient;\n\nconst vec3 up = vec3(0.0, 1.0, 0.0);\n\n// constants for atmospheric scattering\nconst float e = 2.71828182845904523536028747135266249775724709369995957;\nconst float pi = 3.141592653589793238462643383279502884197169;\n\n// wavelength of used primaries, according to preetham\nconst vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );\n// this pre-calcuation replaces older TotalRayleigh(vec3 lambda) function:\n// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))\nconst vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );\n\n// mie stuff\n// K coefficient for the primaries\nconst float v = 4.0;\nconst vec3 K = vec3( 0.686, 0.678, 0.666 );\n\n// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K\nconst vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );\n\n// earth shadow hack\n// cutoffAngle = pi / 1.95;\nconst float cutoffAngle = 1.6110731556870734;\nconst float steepness = 1.5;\nconst float EE = 1000.0;\n\nfloat sunIntensity( float zenithAngleCos ) {\n  zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );\n  return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );\n}\n\nvec3 totalMie( float T ) {\n\tfloat c = ( 0.2 * T ) * 10E-18;\n\treturn 0.434 * c * MieConst;\n}\n\nvoid main() {\n\n  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );\n  vWorldPosition = worldPosition.xyz;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n  gl_Position.z = gl_Position.w; // set z to camera.far\n\n  vSunDirection = normalize( sunPosition );\n\n  vSunE = sunIntensity( dot( vSunDirection, up ) );\n\n  vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );\n\n  float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );\n\n  // extinction (absorbtion + out scattering)\n  // rayleigh coefficients\n  vBetaR = totalRayleigh * rayleighCoefficient;\n\n  // mie coefficients\n  vBetaM = totalMie( turbidity ) * mieCoefficient;\n\n}\n"
 
 /***/ }),
 /* 45 */
 /***/ (function(module, exports) {
 
-	module.exports = "\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float luminance;\nuniform float mieDirectionalG;\n\nconst vec3 cameraPos = vec3( 0.0, 0.0, 0.0 );\n\n// constants for atmospheric scattering\nconst float pi = 3.141592653589793238462643383279502884197169;\n\nconst float n = 1.0003; // refractive index of air\nconst float N = 2.545E25; // number of molecules per unit volume for air at\n// 288.15K and 1013mb (sea level -45 celsius)\n\n// optical length at zenith for molecules\nconst float rayleighZenithLength = 8.4E3;\nconst float mieZenithLength = 1.25E3;\nconst vec3 up = vec3( 0.0, 1.0, 0.0 );\n// 66 arc seconds -> degrees, and the cosine of that\nconst float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;\n\n// 3.0 / ( 16.0 * pi )\nconst float THREE_OVER_SIXTEENPI = 0.05968310365946075;\n// 1.0 / ( 4.0 * pi )\nconst float ONE_OVER_FOURPI = 0.07957747154594767;\n\nfloat rayleighPhase( float cosTheta ) {\n  return THREE_OVER_SIXTEENPI * ( 1.0 + pow( cosTheta, 2.0 ) );\n}\n\nfloat hgPhase( float cosTheta, float g ) {\n  float g2 = pow( g, 2.0 );\n  float inverse = 1.0 / pow( 1.0 - 2.0 * g * cosTheta + g2, 1.5 );\n  return ONE_OVER_FOURPI * ( ( 1.0 - g2 ) * inverse );\n}\n\n// Filmic ToneMapping http://filmicgames.com/archives/75\nconst float A = 0.15;\nconst float B = 0.50;\nconst float C = 0.10;\nconst float D = 0.20;\nconst float E = 0.02;\nconst float F = 0.30;\n\nconst float whiteScale = 1.0748724675633854; // 1.0 / Uncharted2Tonemap(1000.0)\n\nvec3 Uncharted2Tonemap( vec3 x ) {\n  return ( ( x * ( A * x + C * B ) + D * E ) / ( x * ( A * x + B ) + D * F ) ) - E / F;\n}\n\n\nvoid main() {\n  // optical length\n  // cutoff angle at 90 to avoid singularity in next formula.\n  float zenithAngle = acos( max( 0.0, dot( up, normalize( vWorldPosition - cameraPos ) ) ) );\n  float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );\n  float sR = rayleighZenithLength * inverse;\n  float sM = mieZenithLength * inverse;\n\n  // combined extinction factor\n  vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );\n\n  // in scattering\n  float cosTheta = dot( normalize( vWorldPosition - cameraPos ), vSunDirection );\n\n  float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );\n  vec3 betaRTheta = vBetaR * rPhase;\n\n  float mPhase = hgPhase( cosTheta, mieDirectionalG );\n  vec3 betaMTheta = vBetaM * mPhase;\n\n  vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );\n  Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - dot( up, vSunDirection ), 5.0 ), 0.0, 1.0 ) );\n\n  // nightsky\n  vec3 direction = normalize( vWorldPosition - cameraPos );\n  float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]\n  float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]\n  vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );\n  vec3 L0 = vec3( 0.1 ) * Fex;\n\n  // composition + solar disc\n  float sundisk = smoothstep( sunAngularDiameterCos, sunAngularDiameterCos + 0.00002, cosTheta );\n  L0 += ( vSunE * 19000.0 * Fex ) * sundisk;\n\n  vec3 texColor = ( Lin + L0 ) * 0.04 + vec3( 0.0, 0.0003, 0.00075 );\n\n  vec3 curr = Uncharted2Tonemap( ( log2( 2.0 / pow( luminance, 4.0 ) ) ) * texColor );\n  vec3 color = curr * whiteScale;\n\n  vec3 retColor = pow( color, vec3( 1.0 / ( 1.2 + ( 1.2 * vSunfade ) ) ) );\n\n  gl_FragColor = vec4( retColor, 1.0 );\n}\n"
+	module.exports = "\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float luminance;\nuniform float mieDirectionalG;\n\nconst vec3 cameraPos = vec3( 0.0, 0.0, 0.0 );\n\n// constants for atmospheric scattering\nconst float pi = 3.141592653589793238462643383279502884197169;\n\nconst float n = 1.0003; // refractive index of air\nconst float N = 2.545E25; // number of molecules per unit volume for air at\n// 288.15K and 1013mb (sea level -45 celsius)\n\n// optical length at zenith for molecules\nconst float rayleighZenithLength = 8.4E3;\nconst float mieZenithLength = 1.25E3;\nconst vec3 up = vec3( 0.0, 1.0, 0.0 );\n// 66 arc seconds -> degrees, and the cosine of that\nconst float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;\n\n// 3.0 / ( 16.0 * pi )\nconst float THREE_OVER_SIXTEENPI = 0.05968310365946075;\n// 1.0 / ( 4.0 * pi )\nconst float ONE_OVER_FOURPI = 0.07957747154594767;\n\nfloat rayleighPhase( float cosTheta ) {\n  return THREE_OVER_SIXTEENPI * ( 1.0 + pow( cosTheta, 2.0 ) );\n}\n\nfloat hgPhase( float cosTheta, float g ) {\n  float g2 = pow( g, 2.0 );\n  float inverse = 1.0 / pow( 1.0 - 2.0 * g * cosTheta + g2, 1.5 );\n  return ONE_OVER_FOURPI * ( ( 1.0 - g2 ) * inverse );\n}\n\n// Filmic ToneMapping http://filmicgames.com/archives/75\nconst float A = 0.15;\nconst float B = 0.50;\nconst float C = 0.10;\nconst float D = 0.20;\nconst float E = 0.02;\nconst float F = 0.30;\n\nconst float whiteScale = 1.0748724675633854; // 1.0 / Uncharted2Tonemap(1000.0)\n\nvec3 Uncharted2Tonemap( vec3 x ) {\n  return ( ( x * ( A * x + C * B ) + D * E ) / ( x * ( A * x + B ) + D * F ) ) - E / F;\n}\n\nvec4 stars(vec3 pos) {\n  float l = pow(cos(10.*pos.z) + sin(10.*pos.y), 3.0)/4.0;\n  l = 0.0;\n  return vec4(l, l, l, 0.0);\n}\n\n\nvoid main() {\n  // optical length\n  // cutoff angle at 90 to avoid singularity in next formula.\n  float zenithAngle = acos( max( 0.0, dot( up, normalize( vWorldPosition - cameraPos ) ) ) );\n  float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );\n  float sR = rayleighZenithLength * inverse;\n  float sM = mieZenithLength * inverse;\n\n  // combined extinction factor\n  vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );\n\n  // in scattering\n  float cosTheta = dot( normalize( vWorldPosition - cameraPos ), vSunDirection );\n\n  float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );\n  vec3 betaRTheta = vBetaR * rPhase;\n\n  float mPhase = hgPhase( cosTheta, mieDirectionalG );\n  vec3 betaMTheta = vBetaM * mPhase;\n\n  vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );\n  Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - dot( up, vSunDirection ), 5.0 ), 0.0, 1.0 ) );\n\n  // nightsky\n  vec3 direction = normalize( vWorldPosition - cameraPos );\n  float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]\n  float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]\n  vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );\n  vec3 L0 = vec3( 0.1 ) * Fex;\n\n  // composition + solar disc\n  float sundisk = smoothstep( sunAngularDiameterCos, sunAngularDiameterCos + 0.00002, cosTheta );\n  L0 += ( vSunE * 19000.0 * Fex ) * sundisk;\n\n  vec3 texColor = ( Lin + L0 ) * 0.04 + vec3( 0.0, 0.0003, 0.00075 );\n\n  vec3 curr = Uncharted2Tonemap( ( log2( 2.0 / pow( luminance, 4.0 ) ) ) * texColor );\n  vec3 color = curr * whiteScale;\n\n  vec3 retColor = pow( color, vec3( 1.0 / ( 1.2 + ( 1.2 * vSunfade ) ) ) );\n\n\n  gl_FragColor = vec4( retColor, 1.0 ) + stars(vWorldPosition);\n}\n"
 
 /***/ }),
 /* 46 */
