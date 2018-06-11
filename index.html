@@ -39,6 +39,23 @@
       height: 100%;
         z-index: -2;
     }
+
+    #message {
+      font-size: 58pt;
+      font-family: sans-serif;
+      font-style: italic;
+      letter-spacing: -0.12em;
+      color: white;
+      display: block;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      height: 100px;
+      width: 400px;
+      margin-top: -50px;
+      margin-left: -200px;
+    }
+
     #dont-touch-me {
       position: absolute;
       display: block;
@@ -78,6 +95,7 @@
     </style>
   </head>
   <body>
+    <div id="message">okay sure</div>
     <div id="you-know"><canvas id="dont-touch-me"></canvas></div>
     <!-- <footer id="version">grassbusiness//dev//2018-02-10//v0.4.20-alpha</footer> -->
     <script>
@@ -94,7 +112,7 @@
         }
       }
 
-      var app = new svv.KanyeApp({
+      var app = new svv.WavveyApp({
         id: "dont-touch-me",
       });
 
@@ -109,7 +127,6 @@
 
       app.setup();
       app.update(params);
-      app.setPhong(params);
 
       window.addEventListener('load', function (ev) {
         (function loloop() {

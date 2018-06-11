@@ -50,7 +50,7 @@ var svv =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.SubtitleScript = exports.Subtitle = exports.LoadingCube = exports.Loading = exports.TriangleClipGrid = exports.TriangleMesh = exports.WillApp = exports.WaveApp = exports.TriangleClipGridApp = exports.TriOverlapApp = exports.StarfieldApp = exports.SplotchApp = exports.SmileApp = exports.ShadyHillApp = exports.RibbonApp = exports.QuentinApp = exports.OverlapApp = exports.InstancedHillApp = exports.KanyeApp = exports.GraveyardApp = exports.GrassApp = exports.GoldGridApp = exports.GeodeApp = exports.FlatApp = exports.FaceApp = exports.DripApp = exports.DontYouThinkApp = exports.CubeApp = exports.Diagonal01App = exports.CouchApp = exports.CircleGridApp = exports.CircleApp = undefined;
+	exports.SubtitleScript = exports.Subtitle = exports.LoadingCube = exports.Loading = exports.TriangleClipGrid = exports.TriangleMesh = exports.WillApp = exports.WaveApp = exports.WavveyApp = exports.TriangleClipGridApp = exports.TriOverlapApp = exports.StarfieldApp = exports.SplotchApp = exports.SmileApp = exports.ShadyHillApp = exports.RibbonApp = exports.QuentinApp = exports.OverlapApp = exports.InstancedHillApp = exports.KanyeApp = exports.GraveyardApp = exports.GrassApp = exports.GoldGridApp = exports.GeodeApp = exports.FlatApp = exports.FaceApp = exports.DripApp = exports.DontYouThinkApp = exports.CubeApp = exports.Diagonal01App = exports.CouchApp = exports.CircleGridApp = exports.CircleApp = undefined;
 
 	var _CircleApp = __webpack_require__(1);
 
@@ -148,21 +148,25 @@ var svv =
 
 	var _WaveApp2 = _interopRequireDefault(_WaveApp);
 
-	var _WillApp = __webpack_require__(60);
+	var _WavveyApp = __webpack_require__(60);
+
+	var _WavveyApp2 = _interopRequireDefault(_WavveyApp);
+
+	var _WillApp = __webpack_require__(62);
 
 	var _WillApp2 = _interopRequireDefault(_WillApp);
 
-	var _GoldGridApp = __webpack_require__(61);
+	var _GoldGridApp = __webpack_require__(63);
 
-	var _Loading = __webpack_require__(62);
+	var _Loading = __webpack_require__(64);
 
 	var _Loading2 = _interopRequireDefault(_Loading);
 
-	var _LoadingCube = __webpack_require__(64);
+	var _LoadingCube = __webpack_require__(66);
 
 	var _LoadingCube2 = _interopRequireDefault(_LoadingCube);
 
-	var _TriangleClipGrid = __webpack_require__(66);
+	var _TriangleClipGrid = __webpack_require__(68);
 
 	var _TriangleClipGrid2 = _interopRequireDefault(_TriangleClipGrid);
 
@@ -170,9 +174,9 @@ var svv =
 
 	var _TriangleMesh2 = _interopRequireDefault(_TriangleMesh);
 
-	var _Subtitles = __webpack_require__(68);
+	var _Subtitles = __webpack_require__(70);
 
-	var _chatBox = __webpack_require__(69);
+	var _chatBox = __webpack_require__(71);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -203,6 +207,7 @@ var svv =
 	exports.StarfieldApp = _StarfieldApp2.default;
 	exports.TriOverlapApp = _TriOverlapApp2.default;
 	exports.TriangleClipGridApp = _TriangleClipGridApp2.default;
+	exports.WavveyApp = _WavveyApp2.default;
 	exports.WaveApp = _WaveApp2.default;
 	exports.WillApp = _WillApp2.default;
 	exports.TriangleMesh = _TriangleMesh2.default;
@@ -2765,11 +2770,16 @@ var svv =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 	exports.select = select;
 	exports.makeArray3 = makeArray3;
 	exports.rgb = rgb;
 	exports.random = random;
 	exports.stringToHex = stringToHex;
+	exports.round = round;
+	exports.cartesian = cartesian;
 	function select(list) {
 	  return list[Math.floor(Math.random() * list.length)];
 	};
@@ -2810,6 +2820,20 @@ var svv =
 	}
 
 	exports.getElapsedTime = getElapsedTime;
+	function round(f, n) {
+	  var s = Math.pow(10, n);
+	  return Math.round(s * f) / s;
+	}
+
+	// Return Cartesian Coordinates from Normalized Spherical [Theta,Fi]
+	function cartesian(_ref) {
+	  var _ref2 = _slicedToArray(_ref, 3),
+	      r = _ref2[0],
+	      theta = _ref2[1],
+	      fi = _ref2[2];
+
+	  return [round(r * Math.sin(theta) * Math.cos(fi), 3), round(r * Math.sin(theta) * Math.sin(fi), 3), round(r * Math.cos(theta), 3)];
+	}
 
 /***/ }),
 /* 25 */
@@ -5458,6 +5482,11 @@ var svv =
 	      this.sky.set(params);
 	    }
 	  }, {
+	    key: 'setGlobePosition',
+	    value: function setGlobePosition(theta, fi) {
+	      this.sky.setGlobePosition(theta, fi);
+	    }
+	  }, {
 	    key: 'setPhong',
 	    value: function setPhong(_ref) {
 	      var color = _ref.color,
@@ -5517,11 +5546,9 @@ var svv =
 	        floor: _abc
 	      });
 
-	      var images = [];
-
 	      var loader = new THREE.FontLoader();
 	      loader.load('helvetiker.json', function (font) {
-	        var textGeo = new THREE.TextGeometry("you know better", {
+	        var textGeo = new THREE.TextGeometry("shake that body, party that bod", {
 	          font: font,
 	          size: 3.0,
 	          height: 0.01,
@@ -5561,19 +5588,20 @@ var svv =
 	          l = c;
 
 
-	      this.sky.simulacrum.group.position.set(j - 4.99, k - 0.69, l + 0.69);
-	      this.sky.simulacrum.group.rotation.set(Math.PI / 3.0, Math.PI / 3.0, -Math.PI / 6.0);
+	      this.sky.simulacrum.group.position.set(j, k, l);
+	      this.sky.simulacrum.group.rotation.set(0, Math.PI / 2. + 0.1, 0);
 
 	      this.camera.position.set(a, b, c);
 	      this.camera.lookAt(j, k, l);
 
 	      // ...
-	      var u = 2. * theta;
+	      var u = 9. * theta;
 	      var r = 0.3;
 	      var x = r * -3.0;
-	      var y = r * 0.3 * Math.cos(u) + 0.075;
+	      var y = r * 0.3 * Math.cos(u) + 0.005;
 	      var z = r * 0.3 * Math.sin(u);
 	      this.sky.setSunPosition(x, y, z);
+	      this.sky.setGlobeRotation(t / 100.0);
 	    }
 	  }, {
 	    key: 'setupCamera',
@@ -5823,24 +5851,84 @@ var svv =
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+	exports.Sky = exports.SkySimulacrum = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+	var _utils = __webpack_require__(24);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SkySimulacrum = exports.SkySimulacrum = function SkySimulacrum() {
+	  _classCallCheck(this, SkySimulacrum);
+	};
+
+	// Return a box
+
+
+	function _box(_ref, c) {
+	  var _ref2 = _slicedToArray(_ref, 3),
+	      x = _ref2[0],
+	      y = _ref2[1],
+	      z = _ref2[2];
+
+	  var size = 0.3;
+	  var box = new THREE.EdgesGeometry(new THREE.BoxGeometry(size, size, size));
+	  var mat = new THREE.LineBasicMaterial({
+	    color: 0xDDDDDD,
+	    linewidth: 10
+	  });
+	  return new THREE.LineSegments(box, mat);
+	}
+
+	// Return a line from origin to [x, y, z]
+	function _dir(_ref3, c) {
+	  var _ref4 = _slicedToArray(_ref3, 3),
+	      x = _ref4[0],
+	      y = _ref4[1],
+	      z = _ref4[2];
+
+	  var g = new THREE.Geometry();
+	  g.vertices.push(new THREE.Vector3(-x, -y, -z));
+	  g.vertices.push(new THREE.Vector3(x, y, z));
+	  var m = new THREE.LineBasicMaterial({ color: c, linewidth: 100 });
+	  return new THREE.Line(g, m);
+	}
+
+	// Return a global at [x, y, z] of color {{c}} size {{size}}
+	function _globe(_ref5, c, size) {
+	  var _ref6 = _slicedToArray(_ref5, 3),
+	      x = _ref6[0],
+	      y = _ref6[1],
+	      z = _ref6[2];
+
+	  size = size || 0.1;
+	  var g = new THREE.Mesh(new THREE.SphereGeometry(size, 20, 20), new THREE.MeshBasicMaterial({
+	    side: THREE.DoubleSide,
+	    color: c,
+	    wireframe: true,
+	    transparent: true,
+	    opacity: 0.75
+	  }));
+
+	  g.position.set(x, y, z);
+
+	  return g;
+	}
 
 	var Sky = exports.Sky = function () {
 	  // Constructor
-	  function Sky(_ref) {
-	    var size = _ref.size,
-	        sunPosition = _ref.sunPosition,
-	        simulacrum = _ref.simulacrum;
+	  function Sky(_ref7) {
+	    var size = _ref7.size,
+	        sunPosition = _ref7.sunPosition,
+	        simulacrum = _ref7.simulacrum;
 
 	    _classCallCheck(this, Sky);
 
@@ -5850,57 +5938,28 @@ var svv =
 	    this.mat = this.material();
 	    this.sky = new THREE.Group();
 	    this.sky.add(new THREE.Mesh(this.geo, this.mat));
+	    this.params = {
+	      'rot': 0.0
+	    };
 
 	    if (simulacrum) {
 	      this.simulacrum = this.simulacrum(-1.0, 0, 0);
 	      this.simulacrum.group.position.set(-1.0, -1.0, -1.0);
-	      console.log(this.simulacrum.group.position);
 	      console.log("[SIMULACRUM] Added");
 	    }
 	  }
 
 	  _createClass(Sky, [{
-	    key: "globe",
+	    key: 'globe',
 	    value: function globe() {
 	      var g = new THREE.Group();
-
-	      /**
-	       *
-	       */
-	      function _globe(_ref2, c) {
-	        var _ref3 = _slicedToArray(_ref2, 3),
-	            x = _ref3[0],
-	            y = _ref3[1],
-	            z = _ref3[2];
-
-	        return new THREE.Mesh(new THREE.SphereGeometry(0.1, 30, 30), new THREE.MeshBasicMaterial({
-	          side: THREE.DoubleSide,
-	          color: c,
-	          wireframe: true,
-	          transparent: true,
-	          opacity: 0.05
-	        }));
-	      }
-
-	      function _dir(_ref4, c) {
-	        var _ref5 = _slicedToArray(_ref4, 3),
-	            x = _ref5[0],
-	            y = _ref5[1],
-	            z = _ref5[2];
-
-	        var g = new THREE.Geometry();
-	        g.vertices.push(new THREE.Vector3(-x, -y, -z));
-	        g.vertices.push(new THREE.Vector3(x, y, z));
-	        var m = new THREE.LineBasicMaterial({ color: c, linewidth: 100 });
-	        return new THREE.Line(g, m);
-	      }
 
 	      var axes = new THREE.Group();
 	      var l = 0.3;
 	      axes.add(_dir([l, 0, 0], 0xFF0000));
 	      axes.add(_dir([0, l, 0], 0x00FF00));
 	      axes.add(_dir([0, 0, l], 0x0000FF));
-	      axes.add(_globe([0, 0, 0], 0x999999));
+	      axes.add(_globe([0, 0, 0], 0xCCCCCC));
 	      g.add(axes);
 
 	      return g;
@@ -5909,11 +5968,8 @@ var svv =
 	    // Return the simulacrum
 
 	  }, {
-	    key: "simulacrum",
+	    key: 'simulacrum',
 	    value: function simulacrum(x, y, z) {
-
-	      console.log("[SIMULACRUM] (x, y, z) = (", x, y, z, ")");
-
 	      var objects = {};
 
 	      var g = new THREE.Group();
@@ -5926,23 +5982,12 @@ var svv =
 	      objects.sun = new THREE.Mesh(new THREE.IcosahedronGeometry(size / 4.0), mat);
 	      objects.world = this.globe();
 	      objects.stars = _box([0, 0, 0], 0xCCCCCC);
-	      function _box(_ref6, c) {
-	        var _ref7 = _slicedToArray(_ref6, 3),
-	            x = _ref7[0],
-	            y = _ref7[1],
-	            z = _ref7[2];
-
-	        var size = 0.3;
-	        var box = new THREE.EdgesGeometry(new THREE.BoxGeometry(size, size, size));
-	        var mat = new THREE.LineBasicMaterial({
-	          color: 0xDDDDDD,
-	          linewidth: 10
-	        });
-	        return new THREE.LineSegments(box, mat);
-	      }
+	      var pos = (0, _utils.cartesian)([1.0, 0.0, 0.0]);
+	      objects.pos = _globe(pos, 0x00CCCC, 0.025);
 
 	      // objects.sun.position.set(0.0, 0.1, 1.0);
 
+	      objects.world.add(objects.pos);
 	      g.add(objects.world);
 	      g.add(objects.sun);
 	      g.add(objects.stars);
@@ -5953,7 +5998,7 @@ var svv =
 	      };
 	    }
 	  }, {
-	    key: "geometry",
+	    key: 'geometry',
 	    value: function geometry() {
 	      var size = this.size;
 	      var geo = new THREE.BoxGeometry(size, size, size, 1, 1, 1);
@@ -5963,7 +6008,7 @@ var svv =
 	    // Return material for
 
 	  }, {
-	    key: "material",
+	    key: 'material',
 	    value: function material() {
 	      return new THREE.ShaderMaterial({
 	        transparent: true,
@@ -5984,7 +6029,7 @@ var svv =
 	      });
 	    }
 	  }, {
-	    key: "setSunPosition",
+	    key: 'setSunPosition',
 	    value: function setSunPosition(x, y, z) {
 	      this.demoSun.position.x = x;
 	      this.demoSun.position.y = y;
@@ -6002,14 +6047,37 @@ var svv =
 	      }
 	    }
 	  }, {
-	    key: "set",
+	    key: 'set',
 	    value: function set(params) {
-	      console.log(params);
 	      this.mat.uniforms.rayleigh.value = params.rayleigh || this.mat.uniforms.rayleigh.value;
 	      this.mat.uniforms.turbidity.value = params.turbidity || this.mat.uniforms.turbidity.value;
 	      this.mat.uniforms.luminance.value = params.luminance || this.mat.uniforms.luminance.value;
-	      // this.mat.uniforms.mieDirectionalG.value = params.mieDirectionalG || this.mat.uniforms.mieDirectionalG.value;
-	      // this.mat.uniforms.mieCoefficient.value = params.mieCoefficient || this.mat.uniforms.mieCoefficient.value;
+	    }
+
+	    // t in [0, 1)
+
+	  }, {
+	    key: 'setGlobeRotation',
+	    value: function setGlobeRotation(t) {
+	      this.params.rot = t % 1.0 * 2.0 * Math.PI;
+	      if (this.simulacrum) {
+	        var axis = new THREE.Vector3(0.0, 1.0, 0.0);
+	        axis.normalize();
+	        this.simulacrum.objects.world.setRotationFromAxisAngle(axis, this.params.rot);
+	      }
+	    }
+	  }, {
+	    key: 'setGlobePosition',
+	    value: function setGlobePosition(theta, fi) {
+	      if (this.simulacrum) {
+	        var _cartesian = (0, _utils.cartesian)([0.1, theta, fi]),
+	            _cartesian2 = _slicedToArray(_cartesian, 3),
+	            x = _cartesian2[0],
+	            y = _cartesian2[1],
+	            z = _cartesian2[2];
+
+	        this.simulacrum.objects.pos.position.set(x, y, z);
+	      }
 	    }
 	  }]);
 
@@ -6020,13 +6088,13 @@ var svv =
 /* 44 */
 /***/ (function(module, exports) {
 
-	module.exports = "// precision mediump float;\n// precision mediump int;\n\n// uniform mat4 modelViewMatrix; // optional\n// uniform mat4 projectionMatrix; // optional\n\nuniform float size;\nuniform vec3 sunPosition;\n\n/**\n * \n */\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float rayleigh;\nuniform float turbidity;\nuniform float mieCoefficient;\n\nconst vec3 up = vec3(0.0, 1.0, 0.0);\n\n// constants for atmospheric scattering\nconst float e = 2.71828182845904523536028747135266249775724709369995957;\nconst float pi = 3.141592653589793238462643383279502884197169;\n\n// wavelength of used primaries, according to preetham\nconst vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );\n// this pre-calcuation replaces older TotalRayleigh(vec3 lambda) function:\n// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))\nconst vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );\n\n// mie stuff\n// K coefficient for the primaries\nconst float v = 4.0;\nconst vec3 K = vec3( 0.686, 0.678, 0.666 );\n\n// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K\nconst vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );\n\n// earth shadow hack\n// cutoffAngle = pi / 1.95;\nconst float cutoffAngle = 1.6110731556870734;\nconst float steepness = 1.5;\nconst float EE = 1000.0;\n\nfloat sunIntensity( float zenithAngleCos ) {\n  zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );\n  return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );\n}\n\nvec3 totalMie( float T ) {\n\tfloat c = ( 0.2 * T ) * 10E-18;\n\treturn 0.434 * c * MieConst;\n}\n\nvoid main() {\n\n  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );\n  vWorldPosition = worldPosition.xyz;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n  gl_Position.z = gl_Position.w; // set z to camera.far\n\n  vSunDirection = normalize( sunPosition );\n\n  vSunE = sunIntensity( dot( vSunDirection, up ) );\n\n  vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );\n\n  float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );\n\n  // extinction (absorbtion + out scattering)\n  // rayleigh coefficients\n  vBetaR = totalRayleigh * rayleighCoefficient;\n\n  // mie coefficients\n  vBetaM = totalMie( turbidity ) * mieCoefficient;\n\n}\n"
+	module.exports = "/*\nprecision mediump float;\nprecision mediump int;\n\nuniform vec3 position;\nuniform mat4 modelMatrix;\nuniform mat4 modelViewMatrix; // optional\nuniform mat4 projectionMatrix; // optional\n//*/\n\nuniform float size;\nuniform vec3 sunPosition;\n\n/**\n * \n */\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float rayleigh;\nuniform float turbidity;\nuniform float mieCoefficient;\n\nconst vec3 up = vec3(0.0, 1.0, 0.0);\n\n// constants for atmospheric scattering\nconst float e = 2.71828182845904523536028747135266249775724709369995957;\nconst float pi = 3.141592653589793238462643383279502884197169;\n\n// wavelength of used primaries, according to preetham\nconst vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );\n// this pre-calcuation replaces older TotalRayleigh(vec3 lambda) function:\n// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))\nconst vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );\n\n// mie stuff\n// K coefficient for the primaries\nconst float v = 4.0;\nconst vec3 K = vec3( 0.686, 0.678, 0.666 );\n\n// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K\nconst vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );\n\n// earth shadow hack\n// cutoffAngle = pi / 1.95;\nconst float cutoffAngle = 1.6110731556870734;\nconst float steepness = 1.5;\nconst float EE = 1000.0;\n\nfloat sunIntensity( float zenithAngleCos ) {\n  zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );\n  return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );\n}\n\nvec3 totalMie( float T ) {\n\tfloat c = ( 0.2 * T ) * 10E-18;\n\treturn 0.434 * c * MieConst;\n}\n\nvoid main() {\n\n  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );\n  vWorldPosition = worldPosition.xyz;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n  gl_Position.z = gl_Position.w; // set z to camera.far\n\n  vSunDirection = normalize( sunPosition );\n\n  vSunE = sunIntensity( dot( vSunDirection, up ) );\n\n  vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );\n\n  float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );\n\n  // extinction (absorbtion + out scattering)\n  // rayleigh coefficients\n  vBetaR = totalRayleigh * rayleighCoefficient;\n\n  // mie coefficients\n  vBetaM = totalMie( turbidity ) * mieCoefficient;\n\n}\n"
 
 /***/ }),
 /* 45 */
 /***/ (function(module, exports) {
 
-	module.exports = "\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float luminance;\nuniform float mieDirectionalG;\n\nconst vec3 cameraPos = vec3( 0.0, 0.0, 0.0 );\n\n// constants for atmospheric scattering\nconst float pi = 3.141592653589793238462643383279502884197169;\n\nconst float n = 1.0003; // refractive index of air\nconst float N = 2.545E25; // number of molecules per unit volume for air at\n// 288.15K and 1013mb (sea level -45 celsius)\n\n// optical length at zenith for molecules\nconst float rayleighZenithLength = 8.4E3;\nconst float mieZenithLength = 1.25E3;\nconst vec3 up = vec3( 0.0, 1.0, 0.0 );\n// 66 arc seconds -> degrees, and the cosine of that\nconst float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;\n\n// 3.0 / ( 16.0 * pi )\nconst float THREE_OVER_SIXTEENPI = 0.05968310365946075;\n// 1.0 / ( 4.0 * pi )\nconst float ONE_OVER_FOURPI = 0.07957747154594767;\n\nfloat rayleighPhase( float cosTheta ) {\n  return THREE_OVER_SIXTEENPI * ( 1.0 + pow( cosTheta, 2.0 ) );\n}\n\nfloat hgPhase( float cosTheta, float g ) {\n  float g2 = pow( g, 2.0 );\n  float inverse = 1.0 / pow( 1.0 - 2.0 * g * cosTheta + g2, 1.5 );\n  return ONE_OVER_FOURPI * ( ( 1.0 - g2 ) * inverse );\n}\n\n// Filmic ToneMapping http://filmicgames.com/archives/75\nconst float A = 0.15;\nconst float B = 0.50;\nconst float C = 0.10;\nconst float D = 0.20;\nconst float E = 0.02;\nconst float F = 0.30;\n\nconst float whiteScale = 1.0748724675633854; // 1.0 / Uncharted2Tonemap(1000.0)\n\nvec3 Uncharted2Tonemap( vec3 x ) {\n  return ( ( x * ( A * x + C * B ) + D * E ) / ( x * ( A * x + B ) + D * F ) ) - E / F;\n}\n\nvec4 stars(vec3 pos) {\n  float l = pow(cos(10.*pos.z) + sin(10.*pos.y), 3.0)/4.0;\n  l = 0.0;\n  return vec4(l, l, l, 0.0);\n}\n\n\nvoid main() {\n  // optical length\n  // cutoff angle at 90 to avoid singularity in next formula.\n  float zenithAngle = acos( max( 0.0, dot( up, normalize( vWorldPosition - cameraPos ) ) ) );\n  float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );\n  float sR = rayleighZenithLength * inverse;\n  float sM = mieZenithLength * inverse;\n\n  // combined extinction factor\n  vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );\n\n  // in scattering\n  float cosTheta = dot( normalize( vWorldPosition - cameraPos ), vSunDirection );\n\n  float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );\n  vec3 betaRTheta = vBetaR * rPhase;\n\n  float mPhase = hgPhase( cosTheta, mieDirectionalG );\n  vec3 betaMTheta = vBetaM * mPhase;\n\n  vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );\n  Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - dot( up, vSunDirection ), 5.0 ), 0.0, 1.0 ) );\n\n  // nightsky\n  vec3 direction = normalize( vWorldPosition - cameraPos );\n  float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]\n  float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]\n  vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );\n  vec3 L0 = vec3( 0.1 ) * Fex;\n\n  // composition + solar disc\n  float sundisk = smoothstep( sunAngularDiameterCos, sunAngularDiameterCos + 0.00002, cosTheta );\n  L0 += ( vSunE * 19000.0 * Fex ) * sundisk;\n\n  vec3 texColor = ( Lin + L0 ) * 0.04 + vec3( 0.0, 0.0003, 0.00075 );\n\n  vec3 curr = Uncharted2Tonemap( ( log2( 2.0 / pow( luminance, 4.0 ) ) ) * texColor );\n  vec3 color = curr * whiteScale;\n\n  vec3 retColor = pow( color, vec3( 1.0 / ( 1.2 + ( 1.2 * vSunfade ) ) ) );\n\n\n  gl_FragColor = vec4( retColor, 1.0 ) + stars(vWorldPosition);\n}\n"
+	module.exports = "precision mediump float;\nprecision mediump int;\n\nvarying vec3 vWorldPosition;\nvarying vec3 vSunDirection;\nvarying float vSunfade;\nvarying vec3 vBetaR;\nvarying vec3 vBetaM;\nvarying float vSunE;\n\nuniform float luminance;\nuniform float mieDirectionalG;\n\nconst vec3 cameraPos = vec3( 0.0, 0.0, 0.0 );\n\n// constants for atmospheric scattering\nconst float pi = 3.141592653589793238462643383279502884197169;\n\nconst float n = 1.0003; // refractive index of air\nconst float N = 2.545E25; // number of molecules per unit volume for air at\n// 288.15K and 1013mb (sea level -45 celsius)\n\n// optical length at zenith for molecules\nconst float rayleighZenithLength = 8.4E3;\nconst float mieZenithLength = 1.25E3;\nconst vec3 up = vec3( 0.0, 1.0, 0.0 );\n// 66 arc seconds -> degrees, and the cosine of that\nconst float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;\n\n// 3.0 / ( 16.0 * pi )\nconst float THREE_OVER_SIXTEENPI = 0.05968310365946075;\n// 1.0 / ( 4.0 * pi )\nconst float ONE_OVER_FOURPI = 0.07957747154594767;\n\nfloat rayleighPhase( float cosTheta ) {\n  return THREE_OVER_SIXTEENPI * ( 1.0 + pow( cosTheta, 2.0 ) );\n}\n\nfloat hgPhase( float cosTheta, float g ) {\n  float g2 = pow( g, 2.0 );\n  float inverse = 1.0 / pow( 1.0 - 2.0 * g * cosTheta + g2, 1.5 );\n  return ONE_OVER_FOURPI * ( ( 1.0 - g2 ) * inverse );\n}\n\n// Filmic ToneMapping http://filmicgames.com/archives/75\nconst float A = 0.15;\nconst float B = 0.50;\nconst float C = 0.10;\nconst float D = 0.20;\nconst float E = 0.02;\nconst float F = 0.30;\n\nconst float whiteScale = 1.0748724675633854; // 1.0 / Uncharted2Tonemap(1000.0)\n\nvec3 Uncharted2Tonemap( vec3 x ) {\n  return ( ( x * ( A * x + C * B ) + D * E ) / ( x * ( A * x + B ) + D * F ) ) - E / F;\n}\n\nvec4 stars(vec3 pos) {\n  float l = pow(cos(10.*pos.z) + sin(10.*pos.y), 3.0)/4.0;\n  l = 0.0;\n  return vec4(l, l, l, 0.0);\n}\n\n\nvoid main() {\n  // optical length\n  // cutoff angle at 90 to avoid singularity in next formula.\n  float zenithAngle = acos( max( 0.0, dot( up, normalize( vWorldPosition - cameraPos ) ) ) );\n  float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );\n  float sR = rayleighZenithLength * inverse;\n  float sM = mieZenithLength * inverse;\n\n  // combined extinction factor\n  vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );\n\n  // in scattering\n  float cosTheta = dot( normalize( vWorldPosition - cameraPos ), vSunDirection );\n\n  float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );\n  vec3 betaRTheta = vBetaR * rPhase;\n\n  float mPhase = hgPhase( cosTheta, mieDirectionalG );\n  vec3 betaMTheta = vBetaM * mPhase;\n\n  vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );\n  Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - dot( up, vSunDirection ), 5.0 ), 0.0, 1.0 ) );\n\n  // nightsky\n  vec3 direction = normalize( vWorldPosition - cameraPos );\n  float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]\n  float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]\n  vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );\n  vec3 L0 = vec3( 0.1 ) * Fex;\n\n  // composition + solar disc\n  float sundisk = smoothstep( sunAngularDiameterCos, sunAngularDiameterCos + 0.00002, cosTheta );\n  L0 += ( vSunE * 19000.0 * Fex ) * sundisk;\n\n  vec3 texColor = ( Lin + L0 ) * 0.04 + vec3( 0.0, 0.0003, 0.00075 );\n\n  vec3 curr = Uncharted2Tonemap( ( log2( 2.0 / pow( luminance, 4.0 ) ) ) * texColor );\n  vec3 color = curr * whiteScale;\n\n  vec3 retColor = pow( color, vec3( 1.0 / ( 1.2 + ( 1.2 * vSunfade ) ) ) );\n\n\n  gl_FragColor = vec4( retColor, 1.0 ) + stars(vWorldPosition);\n}\n"
 
 /***/ }),
 /* 46 */
@@ -8367,6 +8435,440 @@ var svv =
 	  value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _App = __webpack_require__(2);
+
+	var _App2 = _interopRequireDefault(_App);
+
+	var _Quentin = __webpack_require__(11);
+
+	var _Quentin2 = _interopRequireDefault(_Quentin);
+
+	var _math = __webpack_require__(13);
+
+	var _utils = __webpack_require__(24);
+
+	var _THREE = __webpack_require__(8);
+
+	var THREE = _interopRequireWildcard(_THREE);
+
+	var _StarrySky = __webpack_require__(40);
+
+	var _Sky = __webpack_require__(43);
+
+	var _RibbonPath = __webpack_require__(16);
+
+	var _RibbonPath2 = _interopRequireDefault(_RibbonPath);
+
+	var _Ribbon = __webpack_require__(17);
+
+	var _Ribbon2 = _interopRequireDefault(_Ribbon);
+
+	var _squareGrid = __webpack_require__(61);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function norm(v) {
+	  return Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+	}
+
+	function grid(f, width, height) {
+	  // let surface = new SquareSurface(f, 0.2, width, height);
+	  var surface = new _squareGrid.SphereSurface(f, 0.2, width, height);
+
+	  return new THREE.LineSegments(surface.build(), new THREE.LineBasicMaterial({ color: 0x000000 }));
+	}
+
+	var WavveyApp = function () {
+	  function WavveyApp(params) {
+	    _classCallCheck(this, WavveyApp);
+
+	    this.id = params.id;
+	    this.el = document.getElementById(this.id);
+	    this.app = {};
+	    this.width = this.el.offsetWidth;
+	    this.height = this.el.offsetHeight;
+	  }
+
+	  _createClass(WavveyApp, [{
+	    key: 'setup',
+	    value: function setup() {
+	      this.app.width = this.width;
+	      this.app.height = this.height;
+	      this.app.view_angle = 15;
+	      this.app.aspect = this.width / this.height;
+	      this.app.near = 0.1;
+	      this.app.far = 2000;
+	      this.app.iterations = 0;
+	      this.app.time = 0;
+
+	      // Renderer
+	      this.renderer = new THREE.WebGLRenderer({
+	        antialias: true,
+	        canvas: this.el
+	      });
+
+	      // Scene
+	      this.scene = new THREE.Scene();
+
+	      // Camera
+	      this.setupCamera();
+
+	      // Lights
+	      this.ambientLight = new THREE.AmbientLight(0xCCCCCC);
+	      this.directionalLight = new THREE.DirectionalLight(0x333333, 0.5);
+	      this.pointLight1 = new THREE.PointLight(0x333333, 2, 800);
+	      this.pointLight2 = new THREE.PointLight(0x333333, 2, 800);
+
+	      this.directionalLight.position.set(0, 0, -1);
+	      this.pointLight1.position.set(0, 10, -10);
+	      this.pointLight2.position.set(0, 10, -10);
+
+	      this.directionalLight.lookAt(new THREE.Vector3(0, 0, 0));
+	      this.pointLight1.lookAt(new THREE.Vector3(0, 0, 0));
+	      this.pointLight2.lookAt(new THREE.Vector3(0, 0, 0));
+
+	      this.scene.add(this.directionalLight);
+	      this.scene.add(this.pointLight1);
+	      this.scene.add(this.pointLight2);
+	      this.scene.add(this.ambientLight);
+
+	      this.renderer.setSize(this.width, this.height);
+	      this.renderer.setPixelRatio(1.2);
+	      this.renderer.setClearColor(0xFFFFFF);
+
+	      // Meshes
+	      this.grids = [
+	      // grid((x, y) => { return 0.3*Math.cos(3*x)+2.0; }, 10.0, 10.0),
+	      // grid((x, y) => { return 0.3*Math.sin(2*x)+1.0; }, 10.0, 10.0),
+	      // grid((x, y) => { return 0.3*Math.cos(x*x+y*y)-1.0; }, 10.0, 10.0),
+	      // grid((x, y) => { return 0.3*Math.cos(x*x+y*y)-2.0; }, 10.0, 10.0),
+	      // grid((t, f) => { return 2*t; }, 10.0, 10.0),
+	      // grid((t, f) => { return Math.cos(t)+Math.sin(2*f)+4.0; }, 10.0, 10.0),
+	      grid(function (t, f) {
+	        return 0.22 * Math.sin(5 * (t + f)) + 4.0;
+	      }, 10.0, 10.0)];
+
+	      var g = new THREE.Group();
+	      this.grids.forEach(function (v, _) {
+	        v.rotation.x = Math.PI / 2.0;
+	        g.add(v);
+	      });
+
+	      this.scene.add(g);
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update(params) {
+	      var t = +new Date() / 200.0 / 1.0;
+	      var f = t / 9.;
+
+	      // ...
+	      var theta = f;
+	      // theta = Math.PI/2.0+0.01;
+
+	      var r = 50.0;
+
+	      var x = 50.0 * Math.cos(theta);
+	      var y = 0.0;
+	      var z = 50.0 * Math.sin(theta);
+
+	      this.camera.position.set(x, y, z);
+	      this.camera.lookAt(0.0, 0.0, 0.0);
+	    }
+	  }, {
+	    key: 'setupCamera',
+	    value: function setupCamera() {
+	      this.camera = new THREE.PerspectiveCamera(this.app.view_angle, this.app.aspect, this.app.near, this.app.far);
+	    }
+	  }, {
+	    key: 'resize',
+	    value: function resize(width, height) {
+	      this.app.width = width;
+	      this.app.height = height;
+	      this.app.aspect = width / height;
+	      this.setupCamera();
+	      this.camera.updateProjectionMatrix();
+	      this.renderer.setSize(this.app.width, this.app.height);
+	    }
+	  }, {
+	    key: 'draw',
+	    value: function draw() {
+	      this.renderer.render(this.scene, this.camera);
+	    }
+	  }]);
+
+	  return WavveyApp;
+	}();
+
+	exports.default = WavveyApp;
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.SphereSurface = exports.SquareSurface = exports.FunSurface = exports.SquareGrid = undefined;
+
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _utils = __webpack_require__(24);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/**
+	 *
+	 */
+	var SquareGrid = exports.SquareGrid = function () {
+
+	  /**
+	   * Construct a grid
+	   */
+	  function SquareGrid(_ref) {
+	    var width = _ref.width,
+	        height = _ref.height;
+
+	    _classCallCheck(this, SquareGrid);
+
+	    this.dx = width;
+	    this.dy = height;
+	  }
+
+	  /**
+	   * Return a
+	   */
+
+
+	  _createClass(SquareGrid, [{
+	    key: 'get',
+	    value: function get(i, j) {
+	      return [i * this.dx, j * this.dy];
+	    }
+	  }, {
+	    key: 'getBoxCenter',
+	    value: function getBoxCenter(i, j) {
+	      return [(i + 0.5) * this.dx, (j + 0.5) * this.dy];
+	    }
+
+	    /**
+	     * Return a
+	     */
+
+	  }, {
+	    key: 'getBox',
+	    value: function getBox(i, j) {
+	      return [[i * this.dx, j * this.dy], [(i + 1) * this.dx, (j + 1) * this.dy]];
+	    }
+	  }, {
+	    key: Symbol.iterator,
+	    value: function value() {
+	      var i = 0;
+	      var j = 0;
+
+	      var boxes = [];
+
+	      for (var _i = 0; _i < 10; _i++) {
+	        for (var _j = 0; _j < 10; _j++) {
+	          boxes.push([_i, _j, this.getBox(_i, _j)]);
+	        }
+	      }
+
+	      return boxes.values();
+	    }
+	  }, {
+	    key: 'getPointList',
+	    value: function getPointList(i, j) {
+	      return [[(i + 0) * this.dx, (j + 0) * this.dy], [(i + 1) * this.dx, (j + 0) * this.dy], [(i + 1) * this.dx, (j + 1) * this.dy], [(i + 0) * this.dx, (j + 1) * this.dy]];
+	    }
+	  }]);
+
+	  return SquareGrid;
+	}();
+
+	var FunSurface = exports.FunSurface = function () {
+	  function FunSurface(f, radius, width, height) {
+	    _classCallCheck(this, FunSurface);
+	  }
+
+	  _createClass(FunSurface, [{
+	    key: 'build',
+	    value: function build() {
+	      var geo = new THREE.Geometry();
+
+	      var TOTAL = 10;
+
+	      for (var i = 0; i < TOTAL; i++) {
+	        var x = (0, _utils.random)(-3.0, 3.0);
+	        var y = (0, _utils.random)(-3.0, 3.0);
+	        var z = (0, _utils.random)(-3.0, 3.0);
+
+	        geo.vertices.push(new THREE.Vector3(x, y, z));
+	      }
+
+	      for (var _i2 = 0; _i2 < TOTAL; _i2++) {
+	        var _i3 = Math.floor(Math.random() * TOTAL);
+	        var j = Math.floor(Math.random() * TOTAL);
+	        var k = Math.floor(Math.random() * TOTAL);
+	        geo.faces.push(new THREE.Face3(_i3, j, k));
+	      }
+
+	      return geo;
+	    }
+	  }]);
+
+	  return FunSurface;
+	}();
+
+	var SquareSurface = exports.SquareSurface = function () {
+	  function SquareSurface(f, radius, width, height) {
+	    _classCallCheck(this, SquareSurface);
+
+	    this.f = f;
+	    this.grid = new SquareGrid({ width: 0.08, height: 0.08 });
+	  }
+
+	  _createClass(SquareSurface, [{
+	    key: 'build',
+	    value: function build() {
+	      var self = this;
+	      var geo = new THREE.Geometry();
+
+	      var TOTAL = 200;
+
+	      function __v3(_ref2) {
+	        var _ref3 = _slicedToArray(_ref2, 2),
+	            x = _ref3[0],
+	            z = _ref3[1];
+
+	        var y = self.f(x, z);
+	        return new THREE.Vector3(x, y, z);
+	      }
+
+	      function __add_brick(p, q) {
+
+	        geo.vertices.push(__v3(p), __v3(q));
+	      }
+
+	      for (var i = -TOTAL / 2; i <= TOTAL / 2; i++) {
+	        for (var j = -TOTAL / 2; j <= TOTAL / 2; j++) {
+	          var k = geo.vertices.length;
+	          var points = [];
+
+	          var _grid$getPointList = this.grid.getPointList(i, j),
+	              _grid$getPointList2 = _slicedToArray(_grid$getPointList, 4),
+	              a = _grid$getPointList2[0],
+	              b = _grid$getPointList2[1],
+	              c = _grid$getPointList2[2],
+	              d = _grid$getPointList2[3];
+
+	          __add_brick(a, b);
+	          __add_brick(b, c);
+	          __add_brick(c, d);
+	          __add_brick(d, a);
+	        }
+	      }
+
+	      return geo;
+	    }
+	  }]);
+
+	  return SquareSurface;
+	}();
+
+	var SphereSurface = exports.SphereSurface = function () {
+	  function SphereSurface(f, radius, width, height) {
+	    _classCallCheck(this, SphereSurface);
+
+	    this.f = f;
+	    this.grid = new SquareGrid({ width: 0.08, height: 0.08 });
+	  }
+
+	  _createClass(SphereSurface, [{
+	    key: 'build',
+	    value: function build() {
+	      var self = this;
+	      var geo = new THREE.Geometry();
+
+	      function __v3(_ref4) {
+	        var _ref5 = _slicedToArray(_ref4, 3),
+	            x = _ref5[0],
+	            y = _ref5[1],
+	            z = _ref5[2];
+
+	        return new THREE.Vector3(x, y, z);
+	      }
+
+	      function __add_brick(p, q) {
+
+	        geo.vertices.push(__v3(p), __v3(q));
+	      }
+
+	      var dt = Math.PI / TOTAL;
+	      var df = 2 * Math.PI / TOTAL;
+
+	      var F = this.f;
+	      function __cart(t, f) {
+	        return (0, _utils.cartesian)([F(t, f), t, f]);
+	      }
+
+	      var TOTAL = 160;
+
+	      for (var i = 0; i < TOTAL; i++) {
+	        for (var j = 0; j < TOTAL; j++) {
+
+	          if ((i + j) % 2) {
+	            continue;
+	          }
+
+	          var t0 = (i + 0.0) / TOTAL * Math.PI;
+	          var t1 = (i + 1.0) / TOTAL * Math.PI;
+	          var f0 = (j + 0.0) / TOTAL * 2 * Math.PI;
+	          var f1 = (j + 1.0) / TOTAL * 2 * Math.PI;
+
+	          var r = 5.0;
+	          var a = __cart(t0, f0);
+	          var b = __cart(t1, f0);
+	          var c = __cart(t1, f1);
+	          var d = __cart(t0, f1);
+
+	          __add_brick(a, b);
+	          __add_brick(c, d);
+	          __add_brick(b, c);
+	          __add_brick(d, a);
+
+	          // console.log(t0, f0)
+	          // console.log(t1, f1)
+	        }
+	      }
+
+	      return geo;
+	    }
+	  }]);
+
+	  return SphereSurface;
+	}();
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8471,7 +8973,7 @@ var svv =
 	exports.default = WillApp;
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8712,7 +9214,7 @@ var svv =
 	}(_App4.default);
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8723,7 +9225,7 @@ var svv =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _react = __webpack_require__(63);
+	var _react = __webpack_require__(65);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -8761,13 +9263,13 @@ var svv =
 	exports.default = Loading;
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports) {
 
 	module.exports = React;
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8778,7 +9280,7 @@ var svv =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Flow = __webpack_require__(65);
+	var _Flow = __webpack_require__(67);
 
 	var _utils = __webpack_require__(24);
 
@@ -8944,7 +9446,7 @@ var svv =
 	exports.default = LoadingCube;
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -9094,7 +9596,7 @@ var svv =
 	}();
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9105,7 +9607,7 @@ var svv =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _TriangleClip = __webpack_require__(67);
+	var _TriangleClip = __webpack_require__(69);
 
 	var _TriangleClip2 = _interopRequireDefault(_TriangleClip);
 
@@ -9202,7 +9704,7 @@ var svv =
 	exports.default = TriangleClipGrid;
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -9353,7 +9855,7 @@ var svv =
 	exports.default = TriangleClip;
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -9466,7 +9968,7 @@ var svv =
 	}();
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports) {
 
 	"use strict";
