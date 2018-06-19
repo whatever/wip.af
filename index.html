@@ -65,6 +65,7 @@
     }
     
     #i-dont-really-want-to-think-about-it {
+      text-shadow: -1px 0px 0px rgba(0, 0, 0, 1);
       font-family: sans-serif;
       font-weight: bolder;
       font-size: 200%;
@@ -129,15 +130,27 @@
       app.update(params);
 
       window.addEventListener('load', function (ev) {
+
+        /*
         (function loloop() {
           app.update(params);
           app.draw();
           requestAnimationFrame(loloop);
         }());
+        */
         app.resize(window.innerWidth, window.innerHeight);
-        window.addEventListener('resize', debounce(100, function (ev) {
-          app.resize(window.innerWidth, window.innerHeight);
-        }));
+        (function cant_stop_wont_stop() {
+          let handles = app.eventHandlers();
+          window.addEventListener('resize', handles.resize);
+          window.addEventListener('mousemove', (ev) => {
+            handles.move(ev);
+            app.update(params);
+            app.draw();
+          });
+          app.update(params);
+          app.draw();
+        }());
+
       });
     </script>
   </body>
